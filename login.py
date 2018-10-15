@@ -11,33 +11,26 @@ seed = "()*,-./0123456789:?@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnop~$^!|"
 
 
 def numberTransfer(a):
-    b = seed
-    c = b[0:len(b) - 3]
+    c = seed[0:len(seed) - 3]
     d = len(c)
-    e = b[-2]
-    f = b[-3]
+    e = seed[-2]
+    f = seed[-3]
     g = (f if a < 0 else "")
     a = abs(a)
 
-    h = int(a / d)
+    h = a / d
     i = [a % d]
     while h > 0:
         g += e
         i.append(h % d)
-        h = int(h / d)
+        h = h / d
 
     j = len(i) - 1
     while j >= 0:
-        # g += 0 == j ? c.charAt(i[j]) : c.charAt(i[j] - 1)
-        # g += c[i[j]]
-        # g += c[i[j]-1]
         g += (c[i[j]] if j == 0 else c[i[j] - 1])
         j -= 1
     # g = f + g
     return g
-
-
-# print numberTransfer(1538840053066)
 
 
 def arrayTransfer(a):
@@ -51,6 +44,7 @@ def arrayTransfer(a):
     return b
 
 
+# 对生成的手势数据进行加密
 def pathdataEncode(a):
     b = seed[-1]
 
@@ -68,26 +62,7 @@ def pathdataEncode(a):
     return d + b + e + b + f
 
 
-# test = [[30, 30, 1538844400022], [30, 30, 60], [30, 30, 153253]]
-# print arrayTransfer(test)
-# print pathEncode(test)
-# K((|K((|!!!!!!@F8aiU0^!!!!!!@F8aiT5!!P8g
-# K((|K((|!!!!!!@F8aiU0^!!!!!!@F8aiT5!!P8g
-# file = open('1.gif', 'wb')
-# file.write(imgdata)
-# file.close()
-
-# a = 255
-# b = ord("V")
-# print a&b
-# b = 12
-# c = 19
-# print 16 >> 4
-# print chr((b << 2 | (48 & c) >> 4))
-# d = 60
-# print chr(((15 & c) << 4 | (60 & d) >> 2))
-
-
+# 对验证码的滑动顺序(例如"1234")进行加密
 def pathEncode(path, id):
     e = [0, 0]
     c = len(id) - 2
@@ -98,10 +73,6 @@ def pathEncode(path, id):
     d = c * e[0] + e[1]
     r = int(path) + d
     k = [20, 50, 200, 500]
-    l = []
-    m = {}
-    n = 0
-
     l = [[], [], [], []]
     idd = list(set(id[:c]))
     idd.sort(key=id.index)
@@ -124,21 +95,9 @@ def pathEncode(path, id):
     return s
 
 
-# print pathEncode('24', '3434cf7d036cc21db95c97da5378dabc46a5378dabc4')
-
-s = [["7", "e", "5", "6"],
-     ["8", "c", "d", "a"],
-     ["0", "3", "9", "4"],
-     ["1", "2", "b", "f"]]
-
-
+# 解密base64中图片顺序信息
 def base64decode(imgdata_1):
-    asciilist = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-                 'U', 'V',
-                 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-                 'q', 'r',
-                 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/',
-                 '=']
+    asciilist = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
     h = ''
     i = 0
     while True:
@@ -147,18 +106,14 @@ def base64decode(imgdata_1):
         c = asciilist.index(imgdata_1[i])
         i += 1
         h += chr((b << 2 | (48 & c) >> 4))
-        # print 1, (b << 2 | (48 & c) >> 4), chr((b << 2 | (48 & c) >> 4))
         if imgdata_1[i] != '=':
             d = asciilist.index(imgdata_1[i])
             i += 1
         h += chr((15 & c) << 4 | (60 & d) >> 2)
-        # print 2, ((15 & c) << 4 | (60 & ifequal) >> 2), chr((15 & c) << 4 | (60 & ifequal) >> 2)
 
         if '=' not in imgdata_1[i]:
             e = asciilist.index(imgdata_1[i])
             i += 1
-        # print 3, ((3 & ifequal) << 6 | ifunderline), chr((3 & ifequal) << 6 | ifunderline)
-
         if i > len(imgdata_1) or imgdata_1[i] == '=':
             break
         h += chr((3 & d) << 6 | e)
@@ -169,19 +124,20 @@ def base64decode(imgdata_1):
 
 
 def recombinePattern(img_data):
+    # 返回的图片base64由两部分组成, 前面是打乱的图片,后面是打乱图片正确组合的次序
     img_data0 = img_data.split(',')[1].split('|')[0]
     img_data1 = img_data.split(',')[1].split('|')[1]
 
     file = open('original.png', 'wb')
     file.write(base64.b64decode(img_data0))
     file.close()
-
+    # 分割打乱的图片
     img = Image.open("original.png")
     for y in range(0, 5):
         for x in range(1, 6):
-            # print (32 * (x - 1), 32 * y, 32 * x, 32 * (y + 1))
             combine = img.crop((32 * (x - 1), 32 * y, 32 * x, 32 * (y + 1)))
             combine.save(str(x + 5 * y) + ".png")
+    # 重新组合图片
     outImage = Image.new('RGBA', (160, 160))
     noo = 0
     for i in base64decode(img_data1):
@@ -206,6 +162,7 @@ def recombinePattern(img_data):
     return img_base64
 
 
+# 通过截取特定的小区域与预先处理的24种情形对比来识别验证码
 def patterntohash():
     abc = {1: [27, 78, 32, 83],
            2: [78, 127, 83, 132],
@@ -234,6 +191,7 @@ def patterntohash():
             return key
 
 
+# 生成随机的滑动路径数据
 def path_generate(a):
     pos = {'1': [32, 32],
            '2': [128, 32],
