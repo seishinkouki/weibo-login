@@ -246,7 +246,7 @@ headers3 = {
 def getcookies(user, passwd):
     # 获取验证码
     sign = random.random()
-    url = "https://captcha.weibo.com/api/pattern/get?ver=daf139fb2696a4540b298756bd06266a&source=ssologin&usrname=949164753@qq.com&line=160&side=100&radius=30&_rnd=" + str(
+    url = "https://captcha.weibo.com/api/pattern/get?ver=daf139fb2696a4540b298756bd06266a&source=ssologin&usrname=" + user + "&line=160&side=100&radius=30&_rnd=" + str(
         sign) + "&callback=pl_cb"
     r = requests.get(url)
     imgdata = json.loads(r.text.replace("pl_cb(", '').replace(")", ''))['path_enc']
@@ -255,7 +255,7 @@ def getcookies(user, passwd):
     data_enc = pathdataEncode(path_generate(patterntohash()))
     path_enc = pathEncode(patterntohash(), id)
 
-    url2 = "https://captcha.weibo.com/api/pattern/verify?ver=daf139fb2696a4540b298756bd06266a&id=" + id + "&usrname=949164753@qq.com&source=ssologin&path_enc=" + path_enc + "&data_enc=" + data_enc + "&callback=pl_cb"
+    url2 = "https://captcha.weibo.com/api/pattern/verify?ver=daf139fb2696a4540b298756bd06266a&id=" + id + "&usrname=" + user + "&source=ssologin&path_enc=" + path_enc + "&data_enc=" + data_enc + "&callback=pl_cb"
     url3 = 'https://passport.weibo.cn/sso/login'
     session = requests.Session()
     # 验证验证码
