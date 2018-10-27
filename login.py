@@ -257,8 +257,10 @@ def getcookies(user, passwd):
 
     url2 = "https://captcha.weibo.com/api/pattern/verify?ver=daf139fb2696a4540b298756bd06266a&id=" + id + "&usrname=" + user + "&source=ssologin&path_enc=" + path_enc + "&data_enc=" + data_enc + "&callback=pl_cb"
     url3 = 'https://passport.weibo.cn/sso/login'
-    session = requests.Session()
+    # 必要的等待时间
+    time.sleep(1)
     # 验证验证码
+    session = requests.Session()
     r2 = session.get(url2)
     # print r2.headers
     print json.loads(r2.text.replace("pl_cb(", '').replace(")", ''))['msg']
